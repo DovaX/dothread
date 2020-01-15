@@ -119,7 +119,7 @@ def cli_interface(tc): #tc ~ threading_core
         if a=="1":
             print(tc.threads)
         if a=="2":
-            tc.create_new_thread("Thread-"+str(tc.threadID),tc.work_queue,tc.threadID)
+            tc.create_new_processing_thread("Thread-"+str(tc.threadID),tc.work_queue,tc.threadID)
             tc.exit_flags_dict[tc.threadID]=0
             tc.threadID += 1
             
