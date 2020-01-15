@@ -14,7 +14,12 @@ def run_function_in_interval(seconds,function,*args):
         print(diff)
         trigger = diff.seconds//seconds-interval
         if trigger == 1:
-            function(args[0])
+            if len(args)==0:
+                function()
+            elif len(args)==1:
+                function(args[0])
+            else:
+                raise Exception
         interval = diff.seconds//seconds 
         
         
