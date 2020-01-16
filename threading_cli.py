@@ -53,3 +53,9 @@ def cli_interface(tc): #tc ~ threading_core
             process = a.split("job ")[1]
             job1=threading_core.Job(process,launch_time,periodicity)
             tc.jobs.append(job1)
+            
+            
+
+tc=threading_core.ThreadingCore()
+tc.create_new_time_thread("Thread-"+str(tc.threadID),tc.work_queue,tc.threadID)
+cli_interface(tc)
