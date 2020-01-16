@@ -16,15 +16,23 @@ class Job:
     def run(self):
         self.running = True
         print(self.periodicity)
-        if self.periodicity==0:
-            os.system("start cmd.exe @cmd /k "+self.process)
-        else:
-            while (self.running):
+        if type(self.process)==str: #external process
+            if self.periodicity==0:
                 os.system("start cmd.exe @cmd /k "+self.process)
-                time.sleep(self.periodicity)                
+            else:
+                while (self.running):
+                    os.system("start cmd.exe @cmd /k "+self.process)
+                    time.sleep(self.periodicity)     
+        else:
+            if self.periodicity==0:
+                self.process()
+            else:
+                while (self.running):
+                    self.process()
+                    time.sleep(self.periodicity)               
 
 class ThreadingCore:
-    def __init__(self):
+    def __init__(self,dogui=None):
         self.jobs=[]
         self.queue_lock = threading.Lock()
         self.work_queue = queue.Queue(50)
@@ -33,6 +41,7 @@ class ThreadingCore:
         self.exit_flags_dict={}
         self.start_time = datetime.datetime.now()
         self.done=False
+        self.dogui=dogui
                 
     def process_data(self,thread,threadName, q):
         while not self.exit_flags_dict[thread.threadID]:
@@ -52,15 +61,15 @@ class ThreadingCore:
         self.exit_flags_dict[self.threadID]=0
         self.threadID += 1        
 
-    def create_new_time_thread(self,name,work_queue,threadID):
-        thread = TimeThread(threadID, name, work_queue,self)
+    def create_new_time_thread(self,name,work_queue,threadID,refresh_period=1):
+        thread = TimeThread(threadID, name, work_queue,self,refresh_period)
         thread.start()
         self.threads.append(thread)
         self.exit_flags_dict[self.threadID]=0
         self.threadID += 1
                 
     def compute_time(self,thread):
-        while not self.exit_flags_dict[thread.threadID]:
+        while not self.exit_flags_dict[thread.threadID]==1:
             current_time =  datetime.datetime.now()
             elapsed_time = current_time-self.start_time
             elapsed_seconds=round(elapsed_time.total_seconds())
@@ -75,7 +84,9 @@ class ThreadingCore:
                     else:
                         if elapsed_seconds>=job.launch_time:
                             job.run()                                               
-            time.sleep(5)
+            time.sleep(thread.refresh_period)
+            if self.dogui is not None and self.exit_flags_dict[thread.threadID]!=1:
+                self.dogui.function()
             
     def exit_thread(self,thread_id):
         self.exit_flags_dict[thread_id]=1
@@ -92,6 +103,7 @@ class ThreadingCore:
             
         # Wait for all threads to complete
         for t in self.threads:
+           print(self.exit_flags_dict)
            t.join()
         print("Exiting Main Thread")
         self.done=True
@@ -116,8 +128,9 @@ class ProcessingThread(SimpleThread):
         print("Exiting " + self.name)
 
 class TimeThread(SimpleThread):
-    def __init__(self,threadID,name,q,threading_core):
+    def __init__(self,threadID,name,q,threading_core,refresh_period):
         super().__init__(threadID,name,q,threading_core)
+        self.refresh_period=refresh_period
         
     def run(self):
         print("Starting " + self.name)
