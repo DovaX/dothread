@@ -3,6 +3,8 @@ import datetime
 import queue
 import threading
 import time
+import sys
+sys.path.append("C:\\Users\\EUROCOM\\Documents\\Git\\DovaX\\dothread")
 import datetime_functions
 
 class Job:
