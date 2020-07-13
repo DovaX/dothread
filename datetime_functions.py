@@ -2,7 +2,6 @@
 import datetime
 import time
 
-
 def convert_sql_date_and_time(s):
     #s="2019-05-17 11:20"
     b=s.split(" ")    
@@ -12,7 +11,12 @@ def convert_sql_date_and_time(s):
     return(daytimestamp+60*minutes+60*60*hours)
 
 def does_exceed_current_timestamp(s):
-    time_stamp=time.time()        
+    timestamp=time.time()        
     #print(convert_sql_date_and_time("2019-04-01 10:10"))
-    condition = time_stamp>convert_sql_date_and_time(s)
+    condition = timestamp>convert_sql_date_and_time(s)
     return(condition)
+    
+    
+def get_current_datetime():
+    now=datetime.datetime.strptime(str(datetime.datetime.now())[:10],"%Y-%m-%d")
+    return(now)
