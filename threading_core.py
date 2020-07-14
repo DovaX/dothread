@@ -13,14 +13,15 @@ class Job:
         self.process = process
         self.launch_time = launch_time
         self.periodicity = periodicity
-        self.running = False   
+        self.running = False
         
     def run(self):
         self.running = True
         print(self.periodicity)
         if type(self.process)==str: #external process
             if self.periodicity==0:
-                os.system("start cmd.exe @cmd /k "+self.process)
+                #os.system("start cmd.exe @cmd /k "+self.process)
+                os.system(self.process)
             else:
                 while (self.running):
                     os.system("start cmd.exe @cmd /k "+self.process)
@@ -126,7 +127,7 @@ class ProcessingThread(SimpleThread):
 
     def run(self):
         print("Starting " + self.name)
-        self.threading_core.process_data(self,self.name, self.q,)
+        self.threading_core.process_data(self,self.name, self.q)
         print("Exiting " + self.name)
 
 class TimeThread(SimpleThread):
