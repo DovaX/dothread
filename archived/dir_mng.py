@@ -1,7 +1,6 @@
 import glob
 import os
 
-
 """###################   BEGIN DIRECTORY MANAGEMENT   ######################"""
 def get_files_in_directory(dir,suffix):
     """Returns list of .txt files in given directory"""
@@ -17,7 +16,6 @@ def name_contains(s,files):
         if s in file:
             list1.append(file)    
     return(list1) 
-
 
 def rename_files():
     """NOT USED"""

@@ -31,4 +31,3 @@ dg.Button(gui1.window,"Refresh",gui_refresh,1,2)
 dg.Button(gui1.window,"New thread",gui_new_processing_thread,1,3)
 
 gui1.build_gui()
-
